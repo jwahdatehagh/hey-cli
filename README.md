@@ -750,6 +750,26 @@ hey only ever writes skill directories it owns: each one it creates carries a
 `hey` skill directory (or symlink) without it — a hand-authored skill at one of those paths
 is never overwritten or claimed. `hey doctor` flags an unmanaged baseline and how to adopt it.
 
+### MCP server
+
+`hey mcp` runs an MCP (Model Context Protocol) server on stdin/stdout, serving HEY
+boxes, search, threads, contacts, todos, calendars, and your identity as tools
+backed by your signed-in account — the same keychain-stored credentials every other command uses.
+Register it with any MCP client as a stdio server:
+
+```bash
+claude mcp add hey -- hey mcp          # Claude Code
+hey mcp --read-only                    # serve only read-only actions
+hey mcp --domains boxes,search         # narrow the served tool surface
+```
+
+Each domain is one gateway tool (`hey_boxes`, `hey_search`, `hey_threads`,
+`hey_contacts`, `hey_todos`, `hey_calendar`, `hey_identity`) dispatching actions
+derived from the HEY SDK's API model; call an action named `describe` for any
+action's parameter schema. Listings with more pages come back as
+`{"next_page": cursor, "results": ...}` — pass the cursor back as the action's
+`page` parameter. Logs go to stderr — stdout carries the MCP wire protocol.
+
 ## Troubleshooting
 
 ```bash
